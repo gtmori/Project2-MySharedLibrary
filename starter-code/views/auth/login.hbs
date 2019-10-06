@@ -1,7 +1,10 @@
 <form action="/login" method="post">
-<label for="email">E-mail:</label>
-<input type="text" name="email">
+<label for="username">E-mail:</label>
+<input type="text" name="username">
 <label for="password">Senha</label>
 <input type="text" name="password">
 <button type="submit">Login</button>
+{{#if message}}
+  <div class="error-message">{{ message }}</div>
+{{/if}}
 </form>

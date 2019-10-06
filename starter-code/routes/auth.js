@@ -4,7 +4,7 @@ const express = require("express");
 const auth = express.Router();
 const User = require("../models/User")
 const passport = require("passport");
-const ensureLogin = require("connect-ensure-login");
+
 // =====================================================================================================================================
 // bcrypt require and to encrypt passwords
 const bcrypt = require("bcrypt");
@@ -19,14 +19,14 @@ auth.get("/signup", (req, res, next) => {
 auth.post("/signup", (req, res, next) => {
   console.log(req.body);
   
-  const { name, email, password } = req.body;
+  const { name, username, password } = req.body;
 
-  if (email === "" || password === "") {
+  if (username === "" || password === "") {
     res.render("auth/signup", { message: "Indicate email and password" });
     return;
   }
 
-  User.findOne({ email })
+  User.findOne( { username } )
   .then(user => {
     if (user !== null) {
       res.render("auth/signup", { message: "The email already exists" });
@@ -38,7 +38,7 @@ auth.post("/signup", (req, res, next) => {
 
     const newUser = new User({
       name,
-      email,
+      username,
       password: hashPass
     });
 
@@ -58,7 +58,7 @@ auth.post("/signup", (req, res, next) => {
 // =====================================================================================================================================
 // Login
 auth.get("/login", (req, res, next) => {
-  res.render("auth/login");
+  res.render("auth/login", { "message": req.flash("error") });
 });
 
 auth.post("/login", passport.authenticate("local", {
