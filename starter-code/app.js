@@ -1,32 +1,53 @@
-// =====================================================================================================================================
-// Packages and Models require 
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
-const session = require("express-session");
-const path = require("path");
+require('dotenv').config();
+
+const bodyParser   = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express      = require('express');
+const session      = require("express-session");
+const favicon      = require('serve-favicon');
+const hbs          = require('hbs');
+const mongoose     = require('mongoose');
+const logger       = require('morgan');
+const path         = require('path');
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const MongoStore = require("connect-mongo")(session);
-const http = require('http');
-const bodyParser = require('body-parser');
 const flash = require("connect-flash")
-
-// =====================================================================================================================================
-// Call bodyparser
-app.use(bodyParser.urlencoded({ extended: true }));
+const app = express();
 
 // =====================================================================================================================================
 // Connection with database
 mongoose
   .connect('mongodb://localhost/SharedLibrary', {useNewUrlParser: true, useUnifiedTopology: true})
-  .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
-  .catch(err => console.error('Error connecting to mongo', err));
+  .then(x => {
+    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
+  })
+  .catch(err => {
+    console.error('Error connecting to mongo', err)
+  });
+// =====================================================================================================================================
+
+const app_name = require('./package.json').name;
+const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
+
+// =====================================================================================================================================
+// Middleware Setup
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // =====================================================================================================================================
 // Express View engine setup
+app.use(require('node-sass-middleware')({
+  src:  path.join(__dirname, 'public'),
+  dest: path.join(__dirname, 'public'),
+  sourceMap: true
+}));      
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 // =====================================================================================================================================
 // Configure a session
@@ -35,14 +56,13 @@ app.use(session({
   cookie: { maxAge: 60000 },
   resave: true,
   saveUninitialized: true,
-  store: new MongoStore({
-    mongooseConnection: mongoose.connection,
-    ttl: 24 * 60 * 60 // 1 day
-  })
 }));
+app.use(flash());
 
 // =====================================================================================================================================
 // Passport configuration
+const User = require("./models/User")
+const bcrypt = require("bcrypt");
 passport.serializeUser((user, cb) => {
   cb(null, user._id);
 });
@@ -54,8 +74,8 @@ passport.deserializeUser((id, cb) => {
   });
 });
 
-passport.use(new LocalStrategy((email, password, next) => {
-  User.findOne({ email }, (err, user) => {
+passport.use(new LocalStrategy((username, password, next) => {
+  User.findOne({ username }, (err, user) => {
     if (err) {
       return next(err);
     }
@@ -74,19 +94,18 @@ passport.use(new LocalStrategy((email, password, next) => {
 // Initializate passport an passport session
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
 
+// =====================================================================================================================================
+// default value for title local
+app.locals.title = 'TESTE';
 
 // =====================================================================================================================================
 // Call the routes
 const auth = require('./routes/auth');
 app.use('/', auth);
 
-const router = require('./routes/index');
-app.use('/', router);
-
-// =====================================================================================================================================
-//Create a server
+const index = require('./routes/index');
+app.use('/', index);
 
 
 module.exports = app;
