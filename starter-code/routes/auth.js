@@ -17,8 +17,6 @@ auth.get("/signup", (req, res, next) => {
 });
 
 auth.post("/signup", (req, res, next) => {
-  console.log(req.body);
-  
   const { name, username, password } = req.body;
 
   if (username === "" || password === "") {

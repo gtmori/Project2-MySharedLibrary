@@ -1,0 +1,10 @@
+<form action="/new-library" method="post">
+<label for="title">Title:</label>
+<input type="text" name="title">
+<label for="description">Description:</label>
+<input type="text" name="description">
+<button type="submit">Create</button>
+{{#if message}}
+  <div class="error-message">{{ message }}</div>
+{{/if}}
+</form>
