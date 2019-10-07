@@ -60,8 +60,8 @@ auth.get("/login", (req, res, next) => {
 });
 
 auth.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/login",
+  successRedirect: "/library",
+  failureRedirect: "/",
   failureFlash: true,
   passReqToCallback: true
 }));
