@@ -2,9 +2,10 @@
 // Packages and Models require 
 const express = require('express');
 const router  = express.Router();
-const Library = require(`../models/Library`)
-const User = require(`../models/User`)
-const axios = require('axios')
+const Library = require(`../models/Library`);
+const User = require(`../models/User`);
+const Book = require(`../models/Book`);
+const axios = require('axios');
 
 // =====================================================================================================================================
 // Middlewares
@@ -42,8 +43,14 @@ router.get('/library', ensureAuthenticated, (req, res, next) => {
 
 // =====================================================================================================================================
 // Library Page
-router.get('/library/:id', ensureAuthenticated, (req, res, next) => {
-  res.render('library');
+router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
+  const { libraryID } = req.params;
+  Library.findById(libraryID).populate('users').populate('books')
+    .then(library => {
+      console.log(library);
+      res.render('library', { library });
+    })
+    .catch(err => console.log(err))
 });
 
 
@@ -67,24 +74,25 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
     users: req.user._id
   })
 
-  newLibrary.save((err) => {
-    if (err) { return next(err); }
-    else {
-      User.findByIdAndUpdate(req.user._id, {$push: {library: newLibrary}})
-      .then(
-        res.redirect('/library'))
-      .catch(err => console.log(err))
-    }
-  })
+  newLibrary.save()
+    .then(library => {
+      User.findByIdAndUpdate(req.user._id, {$push: {library: library}})
+        .then(
+          res.redirect(`/library/${library._id}`)  
+        )
+        .catch(err => console.log(err))
+    })
+    .catch(err => console.log(err))
 });
 
 // =====================================================================================================================================
 // Search Book from Google API - List
-router.get('/search', (req, res, next) => {
-  res.render('search-book')
+router.get('/library/:libraryID/search', (req, res, next) => {
+  const { libraryID } = req.params;
+  res.render('search-book', { libraryID })
 })
 
-router.get('/search-book', (req, res, next) => {
+router.get('/library/:libraryID/search-book', (req, res, next) => {
   const { title, author } = req.query  
   const bookTitleValue = title.trim().replace(' ', '+');
   const bookAuthorValue = author.trim().replace(' ', '+');
@@ -98,10 +106,14 @@ router.get('/search-book', (req, res, next) => {
       .get()
       .then(bookList => {
         bookList.data.items.forEach(book => {
-          book.volumeInfo.authors = book.volumeInfo.authors.join(` | `);
+          if (book.volumeInfo.authors !== null && book.volumeInfo.authors !== undefined)  {
+            book.volumeInfo.authors = book.volumeInfo.authors.join(` | `);
+          } else {
+              book.volumeInfo.authors = '';
+            }
         })
-        const { items } = bookList.data
-        res.render('book-list', { items })
+        const { items } = bookList.data;      
+        res.render('book-list', { items });     
       })
       .catch(err => { console.log(err)});
   } else if (bookTitleValue === '' && bookAuthorValue !== '') {
@@ -111,7 +123,11 @@ router.get('/search-book', (req, res, next) => {
       .get()
       .then(bookList => {
         bookList.data.items.forEach(book => {
-          book.volumeInfo.authors = book.volumeInfo.authors.join(` | `);
+          if (book.volumeInfo.authors !== null && book.volumeInfo.authors !== undefined)  {
+            book.volumeInfo.authors = book.volumeInfo.authors.join(` | `);
+          } else {
+              book.volumeInfo.authors = '';
+            }
         })
         const { items } = bookList.data       
         res.render('book-list', { items })
@@ -124,7 +140,11 @@ router.get('/search-book', (req, res, next) => {
       .get()
       .then(bookList => {
         bookList.data.items.forEach(book => {
-          book.volumeInfo.authors = book.volumeInfo.authors.join(` | `);
+          if (book.volumeInfo.authors !== null && book.volumeInfo.authors !== undefined)  {
+            book.volumeInfo.authors = book.volumeInfo.authors.join(` | `);
+          } else {
+              book.volumeInfo.authors = '';
+            }
         })
         const { items } = bookList.data        
         res.render('book-list', { items })
@@ -136,25 +156,69 @@ router.get('/search-book', (req, res, next) => {
 // =====================================================================================================================================
 // Search Book from Google API - Details
 
-router.get('/book-detail/:bookID', (req, res, next) => {
+router.get('/library/:libraryID/book-detail/:bookID', (req, res, next) => {
   const { bookID } = req.params;
   const bookAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes/${bookID}`} );
   bookAPI
     .get()
     .then(bookDetails => {
-      console.log(bookDetails);      
+      if(bookDetails.data.volumeInfo.authors !== null && bookDetails.data.volumeInfo.authors !== undefined) {
+        bookDetails.data.volumeInfo.authors = bookDetails.data.volumeInfo.authors.join(` | `);
+      } else {bookDetails.data.volumeInfo.authors = ''}
       res.render('book-detail', bookDetails.data)
     })  
 })
 
 // =====================================================================================================================================
-// Adding Book to the Library
-
-router.post('/book/add-library', (req, res, next) => {
+// Adding Book to the Library from the list
+router.post('/library/:libraryID/add-book', (req, res, next) => {
+  const { libraryID } = req.params
   const { title, authors, description, image } = req.body;
-  console.log(req.body);
+
+  const newBook = new Book ({
+    title,
+    authors,
+    description,
+    image,
+    libraryID,
+    actualUserID: req.user._id,
+    usersLog: req.user._id,
+  })
   
+  newBook.save()
+    .then(book => {
+      Library.findByIdAndUpdate(libraryID, {$push: {books: book}})
+        .then(res.redirect(`/library/${libraryID}`))
+        .catch(err=>console.log(err))    
+    })
+    .catch(err=>console.log(err))
 })
 
+// =====================================================================================================================================
+// Adding Book to the Library from the list
+router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
+  const { libraryID } = req.params
+  const { title, authors, description, image } = req.body;
+
+  const newBook = new Book ({
+    title,
+    authors,
+    description,
+    image,
+    libraryID,
+    actualUserID: req.user._id,
+    usersLog: req.user._id,
+  })
+  
+  newBook.save()
+    .then(book => {
+      Library.findByIdAndUpdate(libraryID, {$push: {books: book}})
+        .then(res.redirect(`/library/${libraryID}`))
+        .catch(err=>console.log(err))    
+    })
+    .catch(err=>console.log(err))
+})
+// =====================================================================================================================================
+// 
 
 module.exports = router;

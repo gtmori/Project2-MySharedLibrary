@@ -6,11 +6,10 @@ const bookSchema = new Schema({
   description: String,
   author: String,
   image: String,
-  libraryID: Number,
-  bookLibraryID: Number,
-  actualUserID: Number,
-  waitList: Array,
-  usersLog: Array,
+  libraryID: {type: Schema.Types.ObjectID, ref:`Library`},
+  actualUserID: {type: Schema.Types.ObjectID, ref:`User`},
+  waitList: [{type: Schema.Types.ObjectID, ref:`User`}],
+  usersLog: [{type: Schema.Types.ObjectID, ref:`User`}],
   comments: Array,
 });
 
