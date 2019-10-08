@@ -13,6 +13,13 @@
 <img src="{{this.image}}" alt="Book Cover">
 <h3>{{this.title}}</h3>
 <h4>Usuário atual: {{this.actualUserID}}</h4>
+<button type="submit"><a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitinglist">Entrar Lista de Espera</a></button>
+<h2>Wait List</h2>
+<ul>
+  {{#each this.waitList}}
+  <li>{{this}}</li>
+  {{/each}}
+</ul>
 
 </div>
 {{/each}}

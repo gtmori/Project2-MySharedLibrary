@@ -219,6 +219,13 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
     .catch(err=>console.log(err))
 })
 // =====================================================================================================================================
-// 
+// Getting in the wait list of the book in a library
+router.get('/library/:libraryID/book/:bookID/add-user-waitinglist', (req, res, next) => {
+  const { libraryID, bookID } = req.params;
+  Book.findByIdAndUpdate(bookID, {$push: {waitList: req.user}})
+    .then(res.redirect(`/library/${libraryID}`))
+    .catch(err=>console.log(err))
+})
+
 
 module.exports = router;
