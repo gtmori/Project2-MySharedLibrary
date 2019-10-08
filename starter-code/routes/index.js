@@ -26,19 +26,7 @@ router.get('/', (req, res, next) => {
 // =====================================================================================================================================
 // Login Page
 router.get('/library', ensureAuthenticated, (req, res, next) => {
-  console.log(req.user);
-  
-  User.findById(req.user._id)
-    .then(user => {
-      if (user.library.length === 0) {
-        console.log('a');
-        
-        res.render('library-0')
-      } else {
-        console.log(user.library[0]);
-        res.redirect(`/library/${user.library[0]}`)
-      }
-    })
+  res.render(`libraries`, req.user )
 })
 
 // =====================================================================================================================================
@@ -47,8 +35,8 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
   Library.findById(libraryID).populate('users').populate('books')
     .then(library => {
-      console.log(library);
-      res.render('library', { library });
+      let role = (library.admin.toString() === req.user._id.toString())      
+      res.render('library', { libraryID, library, role });
     })
     .catch(err => console.log(err))
 });
@@ -71,6 +59,7 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
   const newLibrary = new Library ({
     title,
     description,
+    admin: req.user._id,
     users: req.user._id
   })
 
@@ -85,6 +74,18 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
     .catch(err => console.log(err))
 });
 
+// =====================================================================================================================================
+// Adding user to a library
+router.get('/library/:libraryID/adduser', ensureAuthenticated, (req, res, next) => {
+  const { libraryID } = req.params;
+  
+  Promise.all([
+    Library.findByIdAndUpdate(libraryID,{$push: {users: req.user}}), 
+    User.findByIdAndUpdate(req.user._id, {$push: {library: libraryID}})
+  ])
+    .then(res.redirect(`/library/${libraryID}`))
+    .catch(err => console.log(err))
+  })
 // =====================================================================================================================================
 // Search Book from Google API - List
 router.get('/library/:libraryID/search', (req, res, next) => {
@@ -132,7 +133,7 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
         const { items } = bookList.data       
         res.render('book-list', { items })
       })
-      .catch(err => { console.log(err)});
+      .catch(err => { console.log(err) });
   } else {
     const bookValue = `intitle:${bookTitleValue}+inauthor:${bookAuthorValue}`;
     const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}`} );
@@ -195,7 +196,7 @@ router.post('/library/:libraryID/add-book', (req, res, next) => {
 })
 
 // =====================================================================================================================================
-// Adding Book to the Library from the list
+// Adding Book to the Library from the book details
 router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
   const { libraryID } = req.params
   const { title, authors, description, image } = req.body;
@@ -223,6 +224,15 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
 router.get('/library/:libraryID/book/:bookID/add-user-waitinglist', (req, res, next) => {
   const { libraryID, bookID } = req.params;
   Book.findByIdAndUpdate(bookID, {$push: {waitList: req.user}})
+    .then(res.redirect(`/library/${libraryID}`))
+    .catch(err=>console.log(err))
+})
+
+// =====================================================================================================================================
+// Remove book from a library
+router.get(`/library/:libraryID/book/:bookID/remove`, (req,res,next) => {
+  const { libraryID, bookID } = req.params;
+  Book.findByIdAndDelete(bookID)
     .then(res.redirect(`/library/${libraryID}`))
     .catch(err=>console.log(err))
 })

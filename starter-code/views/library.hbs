@@ -24,5 +24,11 @@
 </div>
 {{/each}}
 
+{{#if role}}
+<button type="submit"><a href="/library">Add User</a></button>
+<button type="submit"><a href="/library">Remove User</a></button>
+<button type="submit"><a href="/library">Remove Book</a></button>
+{{/if}}
 
-<button type="submit"><a href="/library/{{this.libraryID}}/search">Adicione um livro</a></button>
+
+<button type="submit"><a href="/library/{{library._id}}/search">Adicione um livro</a></button>
