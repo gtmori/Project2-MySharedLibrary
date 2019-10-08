@@ -1,0 +1,16 @@
+{{#each items}}
+<div>
+<img src="{{this.volumeInfo.imageLinks.thumbnail}}" alt="Book Cover" >
+<h1>{{this.volumeInfo.title}}</h1>
+<h2>{{this.volumeInfo.authors}}</h2>
+<button type="submit"><a href="book-detail/{{this.id}}">Mais Detalhes</a></button>
+
+<form action="add-book" method="post">
+  <input type="hidden" name="title" id="" value="{{this.volumeInfo.title}}">
+  <input type="hidden" name="description" id="" value="{{this.volumeInfo.description}}">
+  <input type="hidden" name="authors" id="" value="{{this.volumeInfo.authors}}">
+  <input type="hidden" name="image" id="" value="{{this.volumeInfo.imageLinks.thumbnail}}">
+  <button type="submit">Adicionar a Biblioteca</button>
+</form>
+</div>
+{{/each}}
