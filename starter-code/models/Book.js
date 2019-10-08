@@ -3,15 +3,13 @@ const Schema   = mongoose.Schema;
 
 const bookSchema = new Schema({
   title: String,
-  ISBN: Number,
   description: String,
-  author: Array,
+  author: String,
   image: String,
-  libraryID: Number,
-  bookLibraryID: Number,
-  actualUserID: Number,
-  waitList: Array,
-  usersLog: Array,
+  libraryID: {type: Schema.Types.ObjectID, ref:`Library`},
+  actualUserID: {type: Schema.Types.ObjectID, ref:`User`},
+  waitList: [{type: Schema.Types.ObjectID, ref:`User`}],
+  usersLog: [{type: Schema.Types.ObjectID, ref:`User`}],
   comments: Array,
 });
 

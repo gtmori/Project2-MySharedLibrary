@@ -17,8 +17,6 @@ auth.get("/signup", (req, res, next) => {
 });
 
 auth.post("/signup", (req, res, next) => {
-  console.log(req.body);
-  
   const { name, username, password } = req.body;
 
   if (username === "" || password === "") {
@@ -62,8 +60,8 @@ auth.get("/login", (req, res, next) => {
 });
 
 auth.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/login",
+  successRedirect: "/library",
+  failureRedirect: "/",
   failureFlash: true,
   passReqToCallback: true
 }));
@@ -72,7 +70,7 @@ auth.post("/login", passport.authenticate("local", {
 // Logout
 auth.get("/logout", (req, res) => {
   req.logout();
-  res.redirect("/login");
+  res.redirect("/");
 });
 
 

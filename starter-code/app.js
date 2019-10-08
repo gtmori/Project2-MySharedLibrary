@@ -53,7 +53,7 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 // Configure a session
 app.use(session({
   secret: "sharedlibrary3021",
-  cookie: { maxAge: 60000 },
+  cookie: { maxAge: 600000 },
   resave: true,
   saveUninitialized: true,
 }));
@@ -106,6 +106,5 @@ app.use('/', auth);
 
 const index = require('./routes/index');
 app.use('/', index);
-
 
 module.exports = app;

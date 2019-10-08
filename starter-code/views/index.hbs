@@ -1,5 +1,23 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{title}}</p>
-<a href="/signup">Singup</a>
-<a href="/login">login</a>
+
+
+<form action="/login" method="post">
+  <label for="username">E-mail:</label>
+  <input type="text" name="username">
+  <label for="password">Senha</label>
+  <input type="text" name="password">
+  <button type="submit">Login</button>
+  <br>
+  <p>Do you have a account? <a href="/signup">Singup</a></p>
+
+  {{#if message}}
+    <div class="error-message">{{ message }}</div>
+  {{/if}}
+</form>
+
+
+
 <a href="/logout">logout</a>
+
+
