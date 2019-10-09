@@ -1,13 +1,3 @@
-{{!-- <form action="search-book" method="get">
-  <label for="title">Title:</label>
-  <input type="text" name="title" id="" placeholder="">
-  <label for="">Author:</label>
-  <input type="text" name="author" id="" placeholder="">
-  <button type="submit">Search</button>
-</form> --}}
-
-
-    {{!-- page --}}
 <div class="container">
   <div>
 <form action="search-book" method="get" class="form-inline md-form mr-auto mb-4">
@@ -18,10 +8,10 @@
   </div>
 <div class="card-deck">
 <div class="card" style="width: 18rem;">
-  <img class="card-img-top" src="..." alt="Card image cap">
+  <img class="card-img-top" src="{{this.volumeInfo.imageLinks.thumbnail}}" alt="Card image cap">
   <div class="card-body">
-    <h5 class="card-title">Title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <h5 class="card-title">{{this.volumeInfo.title}}}</h5>
+    <p class="card-text">{{this.volumeInfo.authors}}</p>
     <a href="#" class="btn btn-secondary">Details</a>
     <a href="#" class="btn btn-secondary">Add book</a>
   </div>

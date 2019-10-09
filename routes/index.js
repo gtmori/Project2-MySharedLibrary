@@ -39,14 +39,16 @@ router.get('/libraries', ensureAuthenticated, (req, res, next) => {
 // Library Page
 router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
+  const user = req.user.populate(`library`);
   Library.findById(libraryID).populate('users').populate({
     path: 'books', 
-    populate : ({path: `actualUserID`}),
-    populate : ({path: `waitList`})
+    populate : ({path: `actualUserID`}, {path: `waitList`})
   })
     .then(library => {
+      console.log(user);
+      
       let roleAdmin = (library.admin.toString() === req.user._id.toString())      
-      res.render('library', { libraryID, library, roleAdmin});
+      res.render('library', { user, libraryID, library, roleAdmin});
     })
     .catch(err => console.log(err))
 });
