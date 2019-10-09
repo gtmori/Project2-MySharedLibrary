@@ -10,6 +10,7 @@ const bookSchema = new Schema({
   actualUserID: {type: Schema.Types.ObjectID, ref:`User`},
   waitList: [{type: Schema.Types.ObjectID, ref:`User`}],
   usersLog: [{type: Schema.Types.ObjectID, ref:`User`}],
+  dateStart: {type: Date, default: Date.now},
   comments: Array,
 });
 
