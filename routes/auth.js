@@ -12,22 +12,19 @@ const bcryptSalt = 10;
 
 // =====================================================================================================================================
 // Signup
-auth.get("/signup", (req, res, next) => {
-  res.render("auth/signup");
-});
 
 auth.post("/signup", (req, res, next) => {
   const { name, username, password } = req.body;
 
   if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate email and password" });
+    res.render("/", { message: "Indicate email and password" });
     return;
   }
 
   User.findOne( { username } )
   .then(user => {
     if (user !== null) {
-      res.render("auth/signup", { message: "The email already exists" });
+      res.render("/", { message: "The email already exists" });
       return;
     }
 
@@ -42,7 +39,7 @@ auth.post("/signup", (req, res, next) => {
 
     newUser.save((err) => {
       if (err) {
-        res.render("auth/signup", { message: "Something went wrong" });
+        res.render("/", { message: "Something went wrong" });
       } else {
         res.redirect("/");
       }
@@ -55,12 +52,9 @@ auth.post("/signup", (req, res, next) => {
 
 // =====================================================================================================================================
 // Login
-auth.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
-});
 
 auth.post("/login", passport.authenticate("local", {
-  successRedirect: "/library",
+  successRedirect: "/libraries",
   failureRedirect: "/",
   failureFlash: true,
   passReqToCallback: true

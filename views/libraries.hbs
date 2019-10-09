@@ -1,16 +1,18 @@
-{{#each user}}
-<li>{{this.library.name}}</li>
-{{/each}}
+  <button type="submit" class="btn btn-primary"><a href="/new-library">Add Library</a></button>
+
 
 <div class="card-deck">
+{{#each user.library}}
 <div class="card" style="width: 18rem;">
   {{!-- <img src="..." class="card-img-top" alt="..."> --}}
   <div class="card-body">
-    <h5 class="card-title">Library Title</h5>
+    <h5 class="card-title">{{this.title}}</h5>
     <h6 class="card-subtitle mb-2 text-muted">Number of members</h6>
-    <p class="card-text">Library created for DEV books with memeber of the IronHack SP students of the 5th FT-WD class.</p>
-    <a href="#" class="btn btn-primary">See library</a>
+    <p class="card-text">{{this.description}}</p>
+    <a href="/library/{{this._id}}" class="btn btn-primary">See library</a>
     <a href="#" class="btn btn-primary">Edit library</a>
   </div>
 </div>
+{{/each}}
 </div>
+
