@@ -13,6 +13,7 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   } else {
+    
     res.redirect('/')
   }
 }
@@ -25,8 +26,13 @@ router.get('/', (req, res, next) => {
 
 // =====================================================================================================================================
 // Login Page
-router.get('/library', ensureAuthenticated, (req, res, next) => {
-  res.render(`libraries`, req.user )
+router.get('/libraries', ensureAuthenticated, (req, res, next) => {
+  User.findById(req.user._id).populate('library')
+    .then(user => 
+    {console.log(user)
+      res.render(`libraries`,{user});
+    })
+    .catch(err => console.log(err))
 })
 
 // =====================================================================================================================================
@@ -40,7 +46,7 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   })
     .then(library => {
       let roleAdmin = (library.admin.toString() === req.user._id.toString())      
-      res.render('library', { libraryID, library, roleAdmin, roleActualUser });
+      res.render('library', { libraryID, library, roleAdmin});
     })
     .catch(err => console.log(err))
 });
@@ -53,7 +59,7 @@ router.get('/new-library', ensureAuthenticated, (req, res, next) => {
 });
 
 router.post('/new-library', ensureAuthenticated, (req, res, next) => {
-  const { title, description } = req.body;
+  const { title, subtitle, description } = req.body;
 
   if (title === "") {
     res.render("/new-library", { message: "Indicate title" });
@@ -62,6 +68,7 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
 
   const newLibrary = new Library ({
     title,
+    subtitle,
     description,
     admin: req.user._id,
     users: req.user._id
