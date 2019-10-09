@@ -8,7 +8,7 @@
 </ul>
 
 <h2>Livros Cadastrados</h2>
-  {{#each library.books}}
+
 <div>
 <img src="{{this.image}}" alt="Book Cover">
 <h3>{{this.title}}</h3>
@@ -24,13 +24,21 @@
 </ul>
 
 </div>
-{{/each}}
-
-{{#if role}}
-<button type="submit"><a href="/library">Add User</a></button>
-<button type="submit"><a href="/library">Remove User</a></button>
-<button type="submit"><a href="/library">Remove Book</a></button>
-{{/if}}
-
+{{/each}} --}}
 
 <button type="submit"><a href="/library/{{library._id}}/search">Adicione um livro</a></button>
+{{!-- To use --}}
+<div class="card-deck">
+  {{#each library.books}}
+<div class="card" style="width: 18rem;">
+  <img src="{{this.image}}" alt="Book Cover" class="card-img-top">
+  <div class="card-body">
+    <h5 class="card-title">{{this.title}}</h5>
+    <h6>Usuário atual: {{this.actualUserID}}</h6>
+    <p class="card-text"> book details.</p>
+    <a href="#" class="btn btn-primary">Add me to the Waiting List</a>
+    <a href="#" class="btn btn-primary">Book details</a>
+  </div>
+</div>
+{{/each}}
+</div>
