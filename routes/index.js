@@ -33,10 +33,14 @@ router.get('/library', ensureAuthenticated, (req, res, next) => {
 // Library Page
 router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
-  Library.findById(libraryID).populate('users').populate('books')
+  Library.findById(libraryID).populate('users').populate({
+    path: 'books', 
+    populate : ({path: `actualUserID`}),
+    populate : ({path: `waitList`})
+  })
     .then(library => {
-      let role = (library.admin.toString() === req.user._id.toString())      
-      res.render('library', { libraryID, library, role });
+      let roleAdmin = (library.admin.toString() === req.user._id.toString())      
+      res.render('library', { libraryID, library, roleAdmin, roleActualUser });
     })
     .catch(err => console.log(err))
 });
@@ -156,7 +160,6 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
 
 // =====================================================================================================================================
 // Search Book from Google API - Details
-
 router.get('/library/:libraryID/book-detail/:bookID', (req, res, next) => {
   const { bookID } = req.params;
   const bookAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes/${bookID}`} );
@@ -235,7 +238,23 @@ router.get(`/library/:libraryID/book/:bookID/remove`, (req,res,next) => {
   Book.findByIdAndDelete(bookID)
     .then(res.redirect(`/library/${libraryID}`))
     .catch(err=>console.log(err))
-})
+});
+// =====================================================================================================================================
+// Changing the actual user
+router.get(`/library/:libraryID/book/:bookID/changeuser`, (req, res, next) => {
+  const { libraryID, bookID } = req.params;
+  Book.findById(bookID)
+    .then(book => {
+      book.usersLog.push(book.actualUserID);
+      book.actualuserID = book.waitList[0];
+      book.waitList.shift();
+      book.dateStart = new Date()
 
+      Book.findOneAndUpdate(book._id, { book })
+        .then(res.redirect(`/library/${libraryID}`))
+        .catch(err=>console.log(err))
+    })
+    .catch(err=>console.log(err))
+})
 
 module.exports = router;
