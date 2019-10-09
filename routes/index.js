@@ -39,28 +39,34 @@ router.get('/libraries', ensureAuthenticated, (req, res, next) => {
 // Library Page
 router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
-  Library.findById(libraryID).populate('users').populate({
-    path: 'books', 
-    populate : ({path: `actualUserID`}),
-    populate : ({path: `waitList`})
-  })
-    .then(library => {
+  User.findById(req.user._id).populate('library')
+  .then(user => {
+    Library.findById(libraryID)
+      .populate('users')
+      .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
+    .then(library => {      
       let roleAdmin = (library.admin.toString() === req.user._id.toString())      
-      res.render('library', { libraryID, library, roleAdmin});
+      res.render('library', { user, libraryID, library, roleAdmin });
     })
     .catch(err => console.log(err))
+  })
+  .catch(err => console.log(err))
 });
-
 
 // =====================================================================================================================================
 // Adding new Library
 router.get('/new-library', ensureAuthenticated, (req, res, next) => {
-  res.render('new-library', {user: req.user})
+  User.findById(req.user._id).populate('library')
+  .then(user => 
+  {console.log(user)
+    res.render(`new -libraries`,{user});
+  })
+  .catch(err => console.log(err))
 });
 
 router.post('/new-library', ensureAuthenticated, (req, res, next) => {
   const { title, subtitle, description } = req.body;
-
+  
   if (title === "") {
     res.render("/new-library", { message: "Indicate title" });
     return;
@@ -101,7 +107,11 @@ router.get('/library/:libraryID/adduser', ensureAuthenticated, (req, res, next) 
 // Search Book from Google API - List
 router.get('/library/:libraryID/search', (req, res, next) => {
   const { libraryID } = req.params;
-  res.render('search-book', { libraryID })
+  User.findById(req.user._id).populate('library')
+    .then(user => {
+      res.render('search-book', { user, libraryID })
+    })
+    .catch(err => console.log(err))
 })
 
 router.get('/library/:libraryID/search-book', (req, res, next) => {
@@ -124,8 +134,12 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
               book.volumeInfo.authors = '';
             }
         })
-        const { items } = bookList.data;      
-        res.render('book-list', { items });     
+        const { items } = bookList.data;
+        User.findById(req.user._id).populate('library')
+        .then(user => {
+          res.render('search-book', { user, items }); 
+        })
+        .catch(err => console.log(err))  
       })
       .catch(err => { console.log(err)});
   } else if (bookTitleValue === '' && bookAuthorValue !== '') {
@@ -142,7 +156,11 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
             }
         })
         const { items } = bookList.data       
-        res.render('book-list', { items })
+        User.findById(req.user._id).populate('library')
+        .then(user => {
+          res.render('search-book', { user, items }); 
+        })
+        .catch(err => console.log(err))
       })
       .catch(err => { console.log(err) });
   } else {
@@ -159,7 +177,11 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
             }
         })
         const { items } = bookList.data        
-        res.render('book-list', { items })
+        User.findById(req.user._id).populate('library')
+        .then(user => {
+          res.render('search-book', { user, items }); 
+        })
+        .catch(err => console.log(err))
       })
       .catch(err => { console.log(err)});
   }
@@ -176,8 +198,13 @@ router.get('/library/:libraryID/book-detail/:bookID', (req, res, next) => {
       if(bookDetails.data.volumeInfo.authors !== null && bookDetails.data.volumeInfo.authors !== undefined) {
         bookDetails.data.volumeInfo.authors = bookDetails.data.volumeInfo.authors.join(` | `);
       } else {bookDetails.data.volumeInfo.authors = ''}
-      res.render('book-detail', bookDetails.data)
-    })  
+      User.findById(req.user._id).populate('library')
+      .then(user => {
+        res.render('book-detail', { user, bookDetails })
+      })
+      .catch(err => console.log(err))       
+    })
+    .catch(err => console.log(err)) 
 })
 
 // =====================================================================================================================================
