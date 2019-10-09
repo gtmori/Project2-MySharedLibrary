@@ -39,6 +39,7 @@ router.get('/libraries', ensureAuthenticated, (req, res, next) => {
 // Library Page
 router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
+
   User.findById(req.user._id).populate('library')
   .then(user => {
     Library.findById(libraryID)
