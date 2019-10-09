@@ -1,20 +1,23 @@
 <div class="container">
   <div>
 <form action="search-book" method="get" class="form-inline md-form mr-auto mb-4">
-  <input class="form-control mr-sm-2" type="text" placeholder="Author" aria-label="Author" name="title">
-  <input class="form-control mr-sm-2" type="text" placeholder="Book" aria-label="Book" name="author">
+  <input class="form-control mr-sm-2" type="text" placeholder="Book" aria-label="Book" name="title">
+  <input class="form-control mr-sm-2" type="text" placeholder="Author" aria-label="Author" name="author">
   <button class="btn btn-primary btn-sm my-0" type="submit">Search</button>
 </form>
   </div>
-<div class="card-deck">
-<div class="card" style="width: 18rem;">
+<div class="card-deck row">
+  {{#each items}}
+<div class="card col-md-3 col-sx-12 col-sm-6" style="width: 18rem;">
   <img class="card-img-top" src="{{this.volumeInfo.imageLinks.thumbnail}}" alt="Card image cap">
   <div class="card-body">
-    <h5 class="card-title">{{this.volumeInfo.title}}}</h5>
+    <h5 class="card-title">{{this.volumeInfo.title}}</h5>
     <p class="card-text">{{this.volumeInfo.authors}}</p>
     <a href="#" class="btn btn-secondary">Details</a>
     <a href="#" class="btn btn-secondary">Add book</a>
+   
   </div>
 </div>
+ {{/each}}
 </div>
 </div>
