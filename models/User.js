@@ -5,7 +5,8 @@ const userSchema = new Schema({
   name: String,
   username: String,
   password: String,
-  picture: String,
+  imgPath: String,
+  imgName: String,
   adress: String,
   library: [{type: Schema.Types.ObjectID, ref:`Library`}]
 });
