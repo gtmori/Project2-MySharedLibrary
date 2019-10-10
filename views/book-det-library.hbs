@@ -1,0 +1,20 @@
+<div class="jumbotron">
+<div class="text-center mb-4">
+<img src="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}" alt="Book Cover" >
+</div>
+<h3>{{bookDetails.data.volumeInfo.title}}</h3>
+<h5><b>Author:</b> {{bookDetails.data.volumeInfo.authors}}</h5>
+<h5><b>Published by:</b> {{bookDetails.data.volumeInfo.publisher}}</h5>
+<h5><b>Published in:</b> {{bookDetails.data.volumeInfo.publishedDate}}</h5>
+<h5><b>Number of pages:</b> {{bookDetails.data.volumeInfo.pageCount}}</h5>
+<h5><b>Description:</b> {{bookDetails.data.volumeInfo.description}}</h5>
+
+<form action="add-book" method="post">
+  <input type="hidden" name="title" id="" value="{{bookDetails.data.volumeInfo.title}}">
+  <input type="hidden" name="description" id="" value="{{bookDetails.data.volumeInfo.description}}">
+  <input type="hidden" name="authors" id="" value="{{bookDetails.data.volumeInfo.authors}}">
+  <input type="hidden" name="image" id="" value="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}">
+  <button class="btn btn-default btn-danger" type="submit">Delete this book</button>
+  <button class="btn btn-default btn-outline-primary" type="submit">Back</button>
+</form>
+</div>
