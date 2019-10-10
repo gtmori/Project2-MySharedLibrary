@@ -12,16 +12,8 @@ const axios = require('axios');
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
-  } else {
-    
-    res.redirect('/')
-  }
+  } else {res.redirect('/')}
 }
-// =====================================================================================================================================
-// Home page
-router.get('/', (req, res, next) => {
-  res.render('index');
-});
 
 // =====================================================================================================================================
 // Login Page - All libraries
@@ -36,17 +28,21 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
 
   User.findById(req.user._id).populate('library')
-  .then(user => {
-    Library.findById(libraryID)
-      .populate('users')
-      .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
-    .then(library => {      
-      let roleAdmin = (library.admin.toString() === req.user._id.toString())
-      res.render('library', { user, libraryID, library, roleAdmin });
+    .then(user => {
+      Library.findById(libraryID)
+          .populate('users')
+          .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
+        .then(library => {
+          library.books.forEach(book => {
+            if(book.actualUserID._id.toString() === req.user._id.toString()) {
+              book.actualUserBoolean = true;}
+          })   
+          let roleAdmin = (library.admin.toString() === req.user._id.toString())
+          res.render('library', { user, libraryID, library, roleAdmin });
+        })
+        .catch(err => console.log(err))
     })
     .catch(err => console.log(err))
-  })
-  .catch(err => console.log(err))
 });
 
 // =====================================================================================================================================
@@ -117,7 +113,7 @@ router.get('/library/:libraryID/delete-library', ensureAuthenticated, (req, res,
 })
 // =====================================================================================================================================
 // Update Library
-router.get('/library/:libraryID/edit-library'), ensureAuthenticated, (req, res, next) => {
+router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
   Library.findById(libraryID)
   .then(library => {
@@ -132,7 +128,7 @@ router.get('/library/:libraryID/edit-library'), ensureAuthenticated, (req, res, 
     } else { res.render('/library', {message: "Operation not allowed"}) }
   })
   .catch(err => console.log(err))
-}
+})
 
 router.post('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
@@ -303,7 +299,6 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
     image,
     libraryID,
     actualUserID: req.user._id,
-    usersLog: req.user._id,
   })
   
   newBook.save()
@@ -363,16 +358,19 @@ router.get(`/library/:libraryID/book/:bookID/remove`, (req,res,next) => {
 // Changing the actual user
 router.get(`/library/:libraryID/book/:bookID/changeuser`, (req, res, next) => {
   const { libraryID, bookID } = req.params;
+  console.log(req.params);
+  
   Book.findById(bookID)
     .then(book => {
-      book.usersLog.push(book.actualUserID);
-      book.actualuserID = book.waitList[0];
-      book.waitList.shift();
-      book.dateStart = new Date();
-      const { userLog, actualUserID, waitList, dateStart } = book;
-      Book.findOneAndUpdate(book._id, { userLog, actualUserID, waitList, dateStart })
-        .then(res.redirect(`/library/${libraryID}`))
-        .catch(err=>console.log(err))
+      if (book.waitList.length !== 0) {
+        book.usersLog.push(book.actualUserID);
+        book.actualUserID = book.waitList.shift();
+        book.dateStart = new Date();
+        const { userLog, actualUserID, waitList, dateStart } = book;
+        Book.findByIdAndUpdate(book._id, { userLog, actualUserID, waitList, dateStart })
+          .then(res.redirect(`/library/${libraryID}`))
+          .catch(err=>console.log(err))
+      } else { res.redirect(`/library/${libraryID}`, {message: "Invalid Operation, nobody in wait list"}) }
     })
     .catch(err=>console.log(err))
 })
