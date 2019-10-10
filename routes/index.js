@@ -17,7 +17,6 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/')
   }
 }
-
 // =====================================================================================================================================
 // Home page
 router.get('/', (req, res, next) => {
@@ -93,12 +92,29 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
 });
 // =====================================================================================================================================
 // Delete Library
-router.get('/library/:libraryID/remove-library'), ensureAuthenticated, (req, res, next) => {
+router.get('/library/:libraryID/delete-library'), ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
 
   if (library.admin.toString() === req.user._id.toString()) {
     Library.findByIdAndDelete(libraryID)
-      .then(res.redirect('/libraries'))
+      .then(() => {
+        User.findById(req.user._id)
+          .then(user => {
+            for(let i = 0; i < user.library; i += 1) {
+              if (user.library[i] == libraryID){
+                user.library.splice(i , 1)
+              }
+            }
+            User.findByIdAndUpdate(user._id, { user })
+              .then(() => {
+                Book.findOneAndDelete({actualUserID: libraryID})
+                  .then(res.redirect('/libraries'))
+                  .catch(err => console.log(err))
+              })
+              .catch(err => console.log(err))      
+          })
+          .catch(err => console.log(err))    
+      })
       .catch(err => console.log(err))
   } else { res.render('/library', {message: "Operation not allowed"}) }
 }

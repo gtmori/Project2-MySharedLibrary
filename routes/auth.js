@@ -4,6 +4,8 @@ const express = require("express");
 const auth = express.Router();
 const User = require("../models/User")
 const passport = require("passport");
+const uploadCloud = require('../config/cloudinary.js');
+const multer  = require('multer');
 
 // =====================================================================================================================================
 // bcrypt require and to encrypt passwords
@@ -67,5 +69,21 @@ auth.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+// =====================================================================================================================================
+// Edit-profile
+auth.get("/edit-profile", (req, res, next) => {
+  User.findById(req.user._id)
+  .then(user => res.render('edit-profile', user))
+  .catch(err => console.log(err))
+})
+
+auth.post("/edit-profile", uploadCloud.single('photo'), (req, res, next) => {
+  const { name, username, adress } = req.body
+  const imgPath = req.file.url;
+  const imgName = req.file.originalname;
+  User.findByIdAndUpdate(req.user._id,{name, username, adress, imgPath, imgName})
+    .then(res.redirect('/libraries'))
+    .catch(err => console.log(err))
+})
 
 module.exports = auth;
