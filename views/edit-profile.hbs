@@ -1,11 +1,11 @@
-<form action="/edit-profile" method="post">
+<form action="/edit-profile" method="post" enctype="multipart/form-data">
   <label for="name">Name</label>
-  <input type="text" name="name" id="">
+  <input type="text" name="name" id="" value="{{user.name}}">
   <label for="username">E-mail</label>
-  <input type="text" name="username" id="">
+  <input type="text" name="username" id=""value="{{user.username}}">
   <label for="adress">Adress</label>
-  <input type="text" name="adress" id="">
+  <input type="text" name="adress" id="" value="{{user.adress}}">
   <label for="picture">Picture</label>
-  <input type="file" name="picture" id="">
+  <input type="file" name="picture" id="" value="{{user.imgPath}}">
   <button type="submit">SAVE</button>
 </form>

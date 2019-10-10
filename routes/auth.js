@@ -73,11 +73,11 @@ auth.get("/logout", (req, res) => {
 // Edit-profile
 auth.get("/edit-profile", (req, res, next) => {
   User.findById(req.user._id)
-  .then(user => res.render('edit-profile', user))
+  .then(user => res.render('edit-profile', {user}))
   .catch(err => console.log(err))
 })
 
-auth.post("/edit-profile", uploadCloud.single('photo'), (req, res, next) => {
+auth.post("/edit-profile", uploadCloud.single('picture'), (req, res, next) => {
   const { name, username, adress } = req.body
   const imgPath = req.file.url;
   const imgName = req.file.originalname;
