@@ -1,11 +1,11 @@
-<div class="jumbotron">
+<div class="jumbotron text-center">
   <img src="/images/sharedlibrary_logo.png" alt="logo" class= "img-fluid">
-  <p class="lead">Now you can create a shared library with your friends, classmates or co-workers and manage your books in a decentralized way.</p>
+  <p class="lead my-4">Now you can create a shared library with your friends, classmates or co-workers and manage your books in a decentralized way.</p>
   <hr class="my-4">
-  <a href="" class="btn btn-default btn-outline-secondary mb-4" data-toggle="modal"
-    data-target="#modalLoginForm">Login</a>
-  <a href="" class="btn btn-default btn-outline-primary mb-4" data-toggle="modal" data-target="#modalRegisterForm">Sign
-    Up</a>
+  <button class="btn btn-default btn-outline-secondary mb-4 mx-2" data-toggle="modal"
+    data-target="#modalLoginForm">Login</button>
+  <button class="btn btn-default btn-outline-primary mb-4 mx-2" data-toggle="modal" data-target="#modalRegisterForm">Sign
+    Up</button>
 </div>
 
 {{!-- modal de login  --}}
@@ -15,6 +15,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header text-center">
+        <img src="/images/sharedlibrary_logoletters.png" alt="logo">
         <h4 class="modal-title w-100 font-weight-bold">Log In</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -33,7 +34,7 @@
         </div>
       </div>
       <div class="modal-footer d-flex justify-content-center">
-        <button class="btn aqua-gradient">Login</button>
+        <button class="btn btn-default btn-outline-primary">Login</button>
       </div>
     </div>
   </div>
@@ -47,6 +48,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header text-center">
+        <img src="/images/sharedlibrary_logoletters.png" alt="logo">
         <h4 class="modal-title w-100 font-weight-bold">Sign up</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -73,7 +75,7 @@
    <div class="error-message">{{ message }}</div>
  {{/if}}
       <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-deep-orange">Sign up</button>
+        <button class="btn btn-default btn-outline-primary">Sign up</button>
       </div>
     </div>
   </div>

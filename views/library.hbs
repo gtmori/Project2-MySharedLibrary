@@ -1,18 +1,22 @@
-<h2>Livros Cadastrados</h2>
+<div>
+<h2>Books in the Library</h2>
+</div>
 
-<button class="btn btn-secondary addLivro" type="submit"><a href="/library/{{library._id}}/search">Adicione um livro</a></button>
+<a class="btn btn-deafault btn-primary addLivro" type="submit" href="/library/{{library._id}}/search" >Add a book</a>
 {{!-- To use --}}
-<div class="card-deck row">
+<div class="row">
   {{#each library.books}}
-<div class="card col-md-3 col-sx-12" style="width: 18rem;">
+<div class="card col-md-3 col-sx-12 col-sm-6" style="width: 18rem;">
   <img src="{{this.image}}" alt="Book Cover" class="card-img-top">
   <div class="card-body">
     <h5 class="card-title">{{this.title}}</h5>
-    <h6>Usuário atual: {{this.actualUserID.name}}</h6>
-    <p class="card-text">book details.</p>
+    <h6>Current holder: {{this.actualUserID.name}}</h6>
+    <p class="card-text">Book details.</p>
     <a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitingList" class="btn btn-primary">Add me to the Waiting List</a>
     <a href="#" class="btn btn-primary">Book details</a>
   </div>
 </div>
 {{/each}}
+
 </div>
+<button type="submit" class="btn btn-default btn-outline-danger" href="#">Delete this library</button>
