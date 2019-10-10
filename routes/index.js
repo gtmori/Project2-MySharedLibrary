@@ -115,14 +115,15 @@ router.get('/library/:libraryID/delete-library', ensureAuthenticated, (req, res,
 // Update Library
 router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
-  Library.findById(libraryID)
+Library.findById(libraryID)
   .then(library => {
     if (library.admin.toString() === req.user._id.toString()) {
       Library.findById(libraryID)
         .populate('users')
         .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
         .then(library => {
-          res.render('edit-library', { library });
+          const { user } = req;
+          res.render('edit-library', { library, user });
         })
         .catch(err => console.log(err))
     } else { res.render('/library', {message: "Operation not allowed"}) }

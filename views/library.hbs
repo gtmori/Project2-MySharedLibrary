@@ -2,7 +2,8 @@
 <h2>Books in the Library</h2>
 </div>
 
-<a class="btn btn-deafault btn-primary addLivro" type="submit" href="/library/{{library._id}}/search" >Add a book</a>
+<button class="btn btn-deafault btn-primary addLivro" type="submit" ><a href="/library/{{library._id}}/search" >Add a book</a></button>
+<button class="btn btn-deafault btn-outline-primary addLivro" type="submit" ><a href="/library/{{library._id}}/edit-library" >Edit Library</a></button>
 {{!-- To use --}}
 <div class="row">
   {{#each library.books}}
