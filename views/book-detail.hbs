@@ -1,14 +1,14 @@
 <div>
 
-<img src="{{this.data.volumeInfo.imageLinks.thumbnail}}" alt="Book Cover" >
-<h1>{{this.data.volumeInfo.title}}</h1>
-<h2>{{this.data.volumeInfo.authors}}</h2>
+<img src="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}" alt="Book Cover" >
+<h1>{{bookDetails.data.volumeInfo.title}}</h1>
+<h2>{{bookDetails.data.volumeInfo.authors}}</h2>
 
 <form action="add-book" method="post">
-  <input type="hidden" name="title" id="" value="{{this.data.volumeInfo.title}}">
-  <input type="hidden" name="description" id="" value="{{this.data.volumeInfo.description}}">
-  <input type="hidden" name="authors" id="" value="{{this.data.volumeInfo.authors}}">
-  <input type="hidden" name="image" id="" value="{{this.data.volumeInfo.imageLinks.thumbnail}}">
+  <input type="hidden" name="title" id="" value="{{bookDetails.data.volumeInfo.title}}">
+  <input type="hidden" name="description" id="" value="{{bookDetails.data.volumeInfo.description}}">
+  <input type="hidden" name="authors" id="" value="{{bookDetails.data.volumeInfo.authors}}">
+  <input type="hidden" name="image" id="" value="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}">
   <button type="submit">Add to Library</button>
 </form>
 </div>

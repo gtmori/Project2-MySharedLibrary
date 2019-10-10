@@ -116,6 +116,9 @@ router.get('/library/:libraryID/search', (req, res, next) => {
 })
 
 router.get('/library/:libraryID/search-book', (req, res, next) => {
+  const { libraryID } = req.params;
+  console.log(libraryID);
+  
   const { title, author } = req.query  
   const bookTitleValue = title.trim().replace(' ', '+');
   const bookAuthorValue = author.trim().replace(' ', '+');
@@ -124,7 +127,7 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
     res.render('search-book', { message: 'Adicione um título ou um autor'})
   } else if (bookTitleValue !== '' && bookAuthorValue === '') {
     const bookValue = `intitle:${bookTitleValue}`;
-    const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}`} );
+    const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}&maxResults=40`} );
     booksAPI
       .get()
       .then(bookList => {
@@ -138,14 +141,14 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
         const { items } = bookList.data;
         User.findById(req.user._id).populate('library')
         .then(user => {
-          res.render('search-book', { user, items }); 
+          res.render('search-book', { libraryID, user, items }); 
         })
         .catch(err => console.log(err))  
       })
       .catch(err => { console.log(err)});
   } else if (bookTitleValue === '' && bookAuthorValue !== '') {
     const bookValue = `inauthor:${bookAuthorValue}`;
-    const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}`} );
+    const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}&maxResults=40`} );
     booksAPI
       .get()
       .then(bookList => {
@@ -159,14 +162,14 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
         const { items } = bookList.data       
         User.findById(req.user._id).populate('library')
         .then(user => {
-          res.render('search-book', { user, items }); 
+          res.render('search-book', { libraryID, user, items }); 
         })
         .catch(err => console.log(err))
       })
       .catch(err => { console.log(err) });
   } else {
     const bookValue = `intitle:${bookTitleValue}+inauthor:${bookAuthorValue}`;
-    const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}`} );
+    const booksAPI = axios.create( {baseURL: `https://www.googleapis.com/books/v1/volumes?q=${bookValue}&maxResults=40`} );
     booksAPI
       .get()
       .then(bookList => {
@@ -180,7 +183,7 @@ router.get('/library/:libraryID/search-book', (req, res, next) => {
         const { items } = bookList.data        
         User.findById(req.user._id).populate('library')
         .then(user => {
-          res.render('search-book', { user, items }); 
+          res.render('search-book', { libraryID, user, items }); 
         })
         .catch(err => console.log(err))
       })
@@ -201,6 +204,8 @@ router.get('/library/:libraryID/book-detail/:bookID', (req, res, next) => {
       } else {bookDetails.data.volumeInfo.authors = ''}
       User.findById(req.user._id).populate('library')
       .then(user => {
+        console.log(bookDetails);
+        
         res.render('book-detail', { user, bookDetails })
       })
       .catch(err => console.log(err))       
