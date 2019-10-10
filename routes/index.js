@@ -25,7 +25,7 @@ router.get('/', (req, res, next) => {
 });
 
 // =====================================================================================================================================
-// Login Page
+// Login Page - All libraries
 router.get('/libraries', ensureAuthenticated, (req, res, next) => {
   User.findById(req.user._id).populate('library')
     .then(user => 
@@ -46,7 +46,7 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
       .populate('users')
       .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
     .then(library => {      
-      let roleAdmin = (library.admin.toString() === req.user._id.toString())      
+      let roleAdmin = (library.admin.toString() === req.user._id.toString())
       res.render('library', { user, libraryID, library, roleAdmin });
     })
     .catch(err => console.log(err))
@@ -91,7 +91,43 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
     })
     .catch(err => console.log(err))
 });
+// =====================================================================================================================================
+// Delete Library
+router.get('/library/:libraryID/remove-library'), ensureAuthenticated, (req, res, next) => {
+  const { libraryID } = req.params;
 
+  if (library.admin.toString() === req.user._id.toString()) {
+    Library.findByIdAndDelete(libraryID)
+      .then(res.redirect('/libraries'))
+      .catch(err => console.log(err))
+  } else { res.render('/library', {message: "Operation not allowed"}) }
+}
+// =====================================================================================================================================
+// Update Library
+router.get('/library/:libraryID/edit-library'), ensureAuthenticated, (req, res, next) => {
+  const { libraryID } = req.params;
+
+  if (library.admin.toString() === req.user._id.toString()) {
+    Library.findById(libraryID)
+      .populate('users')
+      .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
+      .then(library => {
+        res.render('edit-library', { library });
+      })
+      .catch(err => console.log(err))
+  } else { res.render('/library', {message: "Operation not allowed"}) }
+}
+
+router.post('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
+  const { libraryID } = req.params;
+  const { title, subtitle, description } = req.body
+
+  if (library.admin.toString() === req.user._id.toString()) {
+    Library.findByIdAndUpdate( libraryID, { title, subtitle, description } )
+      .then(res.redirect(`/library/${libraryID}`))
+      .catch(err => console.log(err))
+  } else { res.render('/library', {message: "Operation not allowed"}) }
+})
 // =====================================================================================================================================
 // Adding user to a library
 router.get('/library/:libraryID/adduser', ensureAuthenticated, (req, res, next) => {
