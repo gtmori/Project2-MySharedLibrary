@@ -1,7 +1,29 @@
-<form action="search-book" method="get">
-  <label for="title">Title:</label>
-  <input type="text" name="title" id="" placeholder="">
-  <label for="">Author:</label>
-  <input type="text" name="author" id="" placeholder="">
-  <button type="submit">Search</button>
+<div class="container">
+  <div>
+<form action="search-book" method="get" class="form-inline md-form mr-auto mb-4">
+  <input class="form-control mr-sm-2" type="text" placeholder="Book" aria-label="Book" name="title">
+  <input class="form-control mr-sm-2" type="text" placeholder="Author" aria-label="Author" name="author">
+  <button class="btn btn-primary btn-sm my-0" type="submit">Search</button>
 </form>
+  </div>
+<div class="row">
+  {{#each items}}
+
+<div class="card col-md-3 col-sx-12 col-sm-6" style="width: 18rem">
+  <img class="card-img-top" src="{{this.volumeInfo.imageLinks.thumbnail}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{this.volumeInfo.title}}</h5>
+    <p class="card-text">{{this.volumeInfo.authors}}</p>
+    <a href="book-detail/{{this.id}}" class="btn btn-secondary">Details</a>
+   <form action="add-book" method="post">
+  <input type="hidden" name="title" id="" value="{{this.volumeInfo.title}}">
+  <input type="hidden" name="description" id="" value="{{this.volumeInfo.description}}">
+  <input type="hidden" name="authors" id="" value="{{this.volumeInfo.authors}}">
+  <input type="hidden" name="image" id="" value="{{this.volumeInfo.imageLinks.thumbnail}}">
+  <button type="submit" class="btn btn-secondary">Add to Library</button>
+</form>
+  </div>
+</div>
+ {{/each}}
+</div>
+</div>

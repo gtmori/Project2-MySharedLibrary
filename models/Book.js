@@ -10,7 +10,9 @@ const bookSchema = new Schema({
   actualUserID: {type: Schema.Types.ObjectID, ref:`User`},
   waitList: [{type: Schema.Types.ObjectID, ref:`User`}],
   usersLog: [{type: Schema.Types.ObjectID, ref:`User`}],
+  dateStart: {type: Date, default: Date.now},
   comments: Array,
+  actualUserBoolean: {type: Boolean, default: false}
 });
 
 const Book = mongoose.model("Book", bookSchema);

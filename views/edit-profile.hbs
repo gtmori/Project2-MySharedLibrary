@@ -1,0 +1,25 @@
+<div class="card">
+  <form action="/edit-profile" method="post" enctype="multipart/form-data">
+  <h5 class="card-header">Edit your profile</h5>
+  <div class="imageProfile">
+    <img src="{{user.imgPath}}" alt="{{user.imgName}}" class="img-thumbnail">
+  <input type="file" class="my-2" name="picture" id="" value="{{user.imgPath}}">
+  </div>
+  <div class="card-body">
+    <h5 class="card-title"> <label for="name"><b>Name:</b></label>
+      <input type="text" name="name" id="" value="{{user.name}}">
+    </h5>
+    <h5>
+      <label for="username"><b>E-mail:</b></label>
+      <input type="text" name="username" value="{{user.username}}">
+    </h5>
+    <h5>
+      <label for="adress"><b>Address:</b></label>
+  <input type="text" name="adress" id="" value="{{user.adress}}">
+    </h5>
+    <p class="card-text">Save the changes you made.</p>
+ 
+  <button type="submit" class="btn btn-primary">SAVE</button> 
+    </form>
+  </div>
+</div>

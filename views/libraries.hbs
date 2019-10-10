@@ -1,0 +1,21 @@
+<div>
+  <h4 class="my-4">Hello, {{user.name}}!</h4>
+    <button type="submit" class="btn btn-default btn-primary addLivro"><a href="/edit-profile">Edit Profile</a></button>
+</div>
+ <hr class="my-2">
+<div>
+  <div class="card-deck">
+    {{#each user.library}}
+    <div class="card" style="width: 18rem;">
+      {{!-- <img src="..." class="card-img-top" alt="..."> --}}
+      <div class="card-body">
+        <h5 class="card-title">{{this.title}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Number of members</h6>
+        <p class="card-text">{{this.description}}</p>
+        <a href="/library/{{this._id}}" class="btn btn-primary">See library</a>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  <a type="submit" class="btn btn-default btn-primary addLivro" href="/new-library">Add Library</a>
+</div>

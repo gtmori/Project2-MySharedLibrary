@@ -96,7 +96,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // =====================================================================================================================================
-// default value for title local
+// Default value for title local
 app.locals.title = 'TESTE';
 
 // =====================================================================================================================================
@@ -106,5 +106,6 @@ app.use('/', auth);
 
 const index = require('./routes/index');
 app.use('/', index);
+
 
 module.exports = app;

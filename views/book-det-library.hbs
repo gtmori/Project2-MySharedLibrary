@@ -1,5 +1,4 @@
 <div class="jumbotron">
-
 <div class="text-center mb-4">
 <img src="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}" alt="Book Cover" >
 </div>
@@ -15,7 +14,7 @@
   <input type="hidden" name="description" id="" value="{{bookDetails.data.volumeInfo.description}}">
   <input type="hidden" name="authors" id="" value="{{bookDetails.data.volumeInfo.authors}}">
   <input type="hidden" name="image" id="" value="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}">
-  <button class="btn btn-default btn-primary" type="submit">Add to Library</button>
+  <button class="btn btn-default btn-danger" type="submit">Delete this book</button>
   <button class="btn btn-default btn-outline-primary" type="submit">Back</button>
 </form>
 </div>

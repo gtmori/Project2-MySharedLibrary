@@ -4,6 +4,8 @@ const express = require("express");
 const auth = express.Router();
 const User = require("../models/User")
 const passport = require("passport");
+const uploadCloud = require('../config/cloudinary.js');
+const multer  = require('multer');
 
 // =====================================================================================================================================
 // bcrypt require and to encrypt passwords
@@ -11,23 +13,26 @@ const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
 // =====================================================================================================================================
-// Signup
-auth.get("/signup", (req, res, next) => {
-  res.render("auth/signup");
+// Home page
+auth.get('/', (req, res, next) => {
+  res.render('index');
 });
+
+// =====================================================================================================================================
+// Signup
 
 auth.post("/signup", (req, res, next) => {
   const { name, username, password } = req.body;
 
   if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate email and password" });
+    res.render("/", { message: "Indicate email and password" });
     return;
   }
 
   User.findOne( { username } )
   .then(user => {
     if (user !== null) {
-      res.render("auth/signup", { message: "The email already exists" });
+      res.render("/", { message: "The email already exists" });
       return;
     }
 
@@ -42,7 +47,7 @@ auth.post("/signup", (req, res, next) => {
 
     newUser.save((err) => {
       if (err) {
-        res.render("auth/signup", { message: "Something went wrong" });
+        res.render("/", { message: "Something went wrong" });
       } else {
         res.redirect("/");
       }
@@ -55,12 +60,9 @@ auth.post("/signup", (req, res, next) => {
 
 // =====================================================================================================================================
 // Login
-auth.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
-});
 
 auth.post("/login", passport.authenticate("local", {
-  successRedirect: "/library",
+  successRedirect: "/libraries",
   failureRedirect: "/",
   failureFlash: true,
   passReqToCallback: true
@@ -73,5 +75,25 @@ auth.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+// =====================================================================================================================================
+// Edit-profile
+auth.get("/edit-profile", (req, res, next) => {
+  User.findById(req.user._id)
+  .then(user => res.render('edit-profile', {user}))
+  .catch(err => console.log(err))
+})
+
+auth.post("/edit-profile", uploadCloud.single('picture'), (req, res, next) => {
+  const { name, username, adress } = req.body
+  const imgPath = req.file.url;
+  const imgName = req.file.originalname;
+  User.findById(req.user._id)
+    .then(user => {
+      User.findByIdAndUpdate(req.user._id,{name, username, adress, imgPath, imgName})
+      .then(res.redirect('/libraries', { user }))
+      .catch(err => console.log(err))
+    })
+    .catch(err => console.log(err))
+})
 
 module.exports = auth;

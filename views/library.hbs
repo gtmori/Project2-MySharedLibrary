@@ -1,34 +1,34 @@
-<h1>teste</h1>
-
-<h2>Usuários</h2>
-<ul>
-{{#each library.users}}
-<li>{{this.name}}</li>
-{{/each}}
-</ul>
-
-<h2>Livros Cadastrados</h2>
-{{#each library.books}}
 <div>
-<img src="{{this.image}}" alt="Book Cover">
-<h3>{{this.title}}</h3>
-<h4>Usuário atual: {{this.actualUserID}}</h4>
-<button type="submit"><a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitinglist">Entrar Lista de Espera</a></button>
-<h2>Wait List</h2>
-<ul>
-  {{#each this.waitList}}
-  <li>{{this}}</li>
-  {{/each}}
-</ul>
+<h2>Books in the Library</h2>
+</div>
 
+<button class="btn btn-deafault btn-primary addLivro" type="submit" ><a href="/library/{{library._id}}/search" >Add a book</a></button>
+{{#if roleAdmin}}
+<button class="btn btn-deafault btn-outline-primary addLivro" type="submit" ><a href="/library/{{library._id}}/edit-library" >Edit Library</a></button>
+{{/if}}
+{{!-- To use --}}
+<div class="row">
+  {{#each library.books}}
+<div class="card col-md-3 col-sx-12 col-sm-6" style="width: 18rem;">
+  <img src="{{this.image}}" alt="Book Cover" class="card-img-top">
+  <div class="card-body">
+    <h5 class="card-title">{{this.title}}</h5>
+    <h6>Current holder: {{this.actualUserID.name}}</h6>
+    <p class="card-text">Book details.</p>
+    <a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitingList" class="btn btn-primary">Add me to the Waiting List</a>
+    <a href="/library/{{libraryID}}/book/{{this._id}}/book-detail" class="btn btn-primary">Book details</a>
+    {{#if roleAdmin}}    
+    <a href="/library/{{libraryID}}/book/{{this._id}}/remove" class="btn btn-primary">Remove Book</a>
+    {{/if}}
+    {{#if this.actualUserBoolean}}  
+    <a href="/library/{{libraryID}}/book/{{this._id}}/changeuser" class="btn btn-primary">Change User</a>
+    {{/if}}
+  </div>
 </div>
 {{/each}}
 
-{{#if role}}
-<button type="submit"><a href="/library">Add User</a></button>
-<button type="submit"><a href="/library">Remove User</a></button>
-<button type="submit"><a href="/library">Remove Book</a></button>
+</div>
+
+{{#if roleAdmin}}
+<button type="submit" class="btn btn-default btn-outline-danger"><a href="/library/{{libraryID}}/delete-library">Delete this library</a></button>
 {{/if}}
-
-
-<button type="submit"><a href="/library/{{library._id}}/search">Adicione um livro</a></button>

@@ -1,8 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  // padding: 0px 30px;
+  font-family: 'Be Vietnam', sans-serif;
+  font-size: 14px;
 }
 
 a {
-  color: #00B7FF;
+color:inherit;
+  text-decoration: none;
+}
+
+.btn {
+  margin: 10px 0px;
+}
+
+.corpo {
+  padding: 0px 30px;
+}
+
+.jumbotron {
+  margin-top: 50px;
+}
+
+.btn-outline-primary {
+  color: #257dc1;
+  border-color: #257dc1;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #257dc1;
+  border-color:#257dc1;
+}
+
+.navbar img {
+  width: 50px;
+}
+
+.btn-primary {
+  background-color: #257dc1;
+  border-color: #257dc1;
+}
+
+.btn-primary:hover {
+  background-color: gray;
+  border-color: gray;
+}
+.modal img {
+  width: 80px;
+}
+
+.addLivro {
+  text-decoration: none;
+}
+
+.img-thumbnail {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+.imageProfile {
+  width: 100px;
+  height: 100px;
+  margin: 20px auto;
+}
+
+input {
+  border: 2px solid red;
 }
