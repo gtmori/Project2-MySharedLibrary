@@ -3,7 +3,9 @@
 </div>
 
 <button class="btn btn-deafault btn-primary addLivro" type="submit" ><a href="/library/{{library._id}}/search" >Add a book</a></button>
+{{#if roleAdmin}}
 <button class="btn btn-deafault btn-outline-primary addLivro" type="submit" ><a href="/library/{{library._id}}/edit-library" >Edit Library</a></button>
+{{/if}}
 {{!-- To use --}}
 <div class="row">
   {{#each library.books}}
