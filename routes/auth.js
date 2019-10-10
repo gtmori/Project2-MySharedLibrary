@@ -81,8 +81,12 @@ auth.post("/edit-profile", uploadCloud.single('picture'), (req, res, next) => {
   const { name, username, adress } = req.body
   const imgPath = req.file.url;
   const imgName = req.file.originalname;
-  User.findByIdAndUpdate(req.user._id,{name, username, adress, imgPath, imgName})
-    .then(res.redirect('/libraries'))
+  User.findById(req.user._id)
+    .then(user => {
+      User.findByIdAndUpdate(req.user._id,{name, username, adress, imgPath, imgName})
+      .then(res.redirect('/libraries', { user }))
+      .catch(err => console.log(err))
+    })
     .catch(err => console.log(err))
 })
 
