@@ -15,4 +15,33 @@ a {
 .corpo {
   padding: 0px 30px; }
 
+.jumbotron {
+  margin-top: 50px; }
+
+.btn-outline-primary {
+  color: #257dc1;
+  border-color: #257dc1; }
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #257dc1;
+  border-color: #257dc1; }
+
+.navbar img {
+  width: 50px; }
+
+.btn-primary {
+  background-color: #257dc1;
+  border-color: #257dc1; }
+
+.btn-primary:hover {
+  background-color: gray;
+  border-color: gray; }
+
+.modal img {
+  width: 80px; }
+
+.addLivro {
+  text-decoration: none; }
+
 /*# sourceMappingURL=style.css.map */
