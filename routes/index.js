@@ -60,7 +60,7 @@ router.get('/new-library', ensureAuthenticated, (req, res, next) => {
   User.findById(req.user._id).populate('library')
   .then(user => 
   {console.log(user)
-    res.render(`new -libraries`,{user});
+    res.render(`new-library`,{user});
   })
   .catch(err => console.log(err))
 });
