@@ -20,4 +20,7 @@
 {{/each}}
 
 </div>
-<button type="submit" class="btn btn-default btn-outline-danger" href="#">Delete this library</button>
+
+{{#if roleAdmin}}
+<button type="submit" class="btn btn-default btn-outline-danger"><a href="/library/{{libraryID}}/delete-library">Delete this library</a></button>
+{{/if}}

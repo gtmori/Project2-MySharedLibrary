@@ -27,12 +27,8 @@ router.get('/', (req, res, next) => {
 // Login Page - All libraries
 router.get('/libraries', ensureAuthenticated, (req, res, next) => {
   User.findById(req.user._id).populate('library')
-    .then(user => 
-    {console.log(user)
-      res.render(`libraries`,{user});
-    })
-    .catch(err => console.log(err))
-})
+    .then(user => {res.render(`libraries`,{user})})
+    .catch(err => console.log(err))})
 
 // =====================================================================================================================================
 // Library Page
@@ -57,12 +53,8 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
 // Adding new Library
 router.get('/new-library', ensureAuthenticated, (req, res, next) => {
   User.findById(req.user._id).populate('library')
-  .then(user => 
-  {console.log(user)
-    res.render(`new-library`,{user});
-  })
-  .catch(err => console.log(err))
-});
+  .then(user => {res.render(`new-library`,{user})})
+  .catch(err => console.log(err))});
 
 router.post('/new-library', ensureAuthenticated, (req, res, next) => {
   const { title, subtitle, description } = req.body;
@@ -92,32 +84,37 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
 });
 // =====================================================================================================================================
 // Delete Library
-router.get('/library/:libraryID/delete-library'), ensureAuthenticated, (req, res, next) => {
+router.get('/library/:libraryID/delete-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
-
-  if (library.admin.toString() === req.user._id.toString()) {
-    Library.findByIdAndDelete(libraryID)
-      .then(() => {
-        User.findById(req.user._id)
-          .then(user => {
-            for(let i = 0; i < user.library; i += 1) {
-              if (user.library[i] == libraryID){
-                user.library.splice(i , 1)
+  Library.findById(libraryID)
+  .then(library => {
+    if (library.admin.toString() === req.user._id.toString()) {
+      Library.findByIdAndDelete(libraryID)
+        .then(() => {
+          User.findById(req.user._id)
+            .then(user => {
+              for(let i = 0; i < user.library.length; i += 1) {
+                if (user.library[i] == libraryID){
+                  user.library.splice(i , 1)                  
+                }
+              console.log(i,":", user);              
               }
-            }
-            User.findByIdAndUpdate(user._id, { user })
-              .then(() => {
-                Book.findOneAndDelete({actualUserID: libraryID})
-                  .then(res.redirect('/libraries'))
-                  .catch(err => console.log(err))
-              })
-              .catch(err => console.log(err))      
-          })
-          .catch(err => console.log(err))    
-      })
-      .catch(err => console.log(err))
-  } else { res.render('/library', {message: "Operation not allowed"}) }
-}
+              console.log("teste",user);
+              const { library } = user            
+              User.findByIdAndUpdate(user._id, { library })
+                .then(() => {
+                  Book.findOneAndDelete({libraryID: libraryID})
+                    .then(res.redirect('/libraries'))
+                    .catch(err => console.log(err))
+                })
+                .catch(err => console.log(err))      
+            })
+            .catch(err => console.log(err))    
+        })
+        .catch(err => console.log(err))
+    } else { res.render('/library', {message: "Operation not allowed"}) }
+  })
+})
 // =====================================================================================================================================
 // Update Library
 router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
@@ -319,6 +316,18 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
     .catch(err=>console.log(err))
 })
 // =====================================================================================================================================
+// Book detail of each book of a library
+router.get('/library/:libraryID/book/:bookID/book-detail', (req, res, next) => {
+  const { libraryID, bookID } = req.params;
+  User.findById(req.user._id)
+    .then(user => {
+      Book.findById(bookID)
+        .then(book => res.render('book-det-library', {user, book}))
+        .catch(err=>console.log(err))
+    })
+    .catch(err => console.log(err))
+})
+// =====================================================================================================================================
 // Getting in the wait list of the book in a library
 router.get('/library/:libraryID/book/:bookID/add-user-waitinglist', (req, res, next) => {
   const { libraryID, bookID } = req.params;
@@ -331,8 +340,24 @@ router.get('/library/:libraryID/book/:bookID/add-user-waitinglist', (req, res, n
 // Remove book from a library
 router.get(`/library/:libraryID/book/:bookID/remove`, (req,res,next) => {
   const { libraryID, bookID } = req.params;
-  Book.findByIdAndDelete(bookID)
-    .then(res.redirect(`/library/${libraryID}`))
+  Library.findById(req.user._id)
+    .then(library => {
+      if (library.admin.toString() === req.user._id.toString()) {
+        for (let i = 0; i < library.books.length; i += 1) {
+          if(library.books[i] == bookID) {
+            library.books.splice(i, 1)
+          }
+        }
+        const { books } = library;
+        Library.findByIdAndUpdate(libraryID, { books })
+          .then(() => {
+            Book.findByIdAndDelete(bookID)
+            .then(res.redirect(`/library/${libraryID}`))
+            .catch(err=>console.log(err))
+          })
+          .catch(err=>console.log(err))
+      }
+    })
     .catch(err=>console.log(err))
 });
 // =====================================================================================================================================
@@ -344,9 +369,9 @@ router.get(`/library/:libraryID/book/:bookID/changeuser`, (req, res, next) => {
       book.usersLog.push(book.actualUserID);
       book.actualuserID = book.waitList[0];
       book.waitList.shift();
-      book.dateStart = new Date()
-
-      Book.findOneAndUpdate(book._id, { book })
+      book.dateStart = new Date();
+      const { userLog, actualUserID, waitList, dateStart } = book;
+      Book.findOneAndUpdate(book._id, { userLog, actualUserID, waitList, dateStart })
         .then(res.redirect(`/library/${libraryID}`))
         .catch(err=>console.log(err))
     })
