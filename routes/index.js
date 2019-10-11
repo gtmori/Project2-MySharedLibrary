@@ -321,10 +321,11 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
     publishedDate,
     pageCount,
     actualUserID: req.user._id,
-  })
-  
+  })  
   newBook.save()
     .then(book => {
+      console.log(book);
+      
       Library.findByIdAndUpdate(libraryID, {$push: {books: book}})
         .then(res.redirect(`/library/${libraryID}`))
         .catch(err=>console.log(err))    
