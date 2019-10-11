@@ -10,14 +10,11 @@
 <h5 class="card-body"><b>Published in:</b> {{book.publishedDate}}</h5>
 <h5 class="card-body"><b>Number of pages:</b> {{book.pageCount}}</h5>
 <h5 class="card-body"><b>Description:</b> {{book.description}}</h5>
-
-<form action="add-book" method="post">
-  <input type="hidden" name="title" value="{{bookDetails.data.volumeInfo.title}}">
-  <input type="hidden" name="description" value="{{bookDetails.data.volumeInfo.description}}">
-  <input type="hidden" name="authors" value="{{bookDetails.data.volumeInfo.authors}}">
-  <input type="hidden" name="image" value="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}">
-  <button class="btn btn-default btn-danger" type="submit">Delete this book</button>
-  <button class="btn btn-default btn-outline-primary" type="submit">Back</button>
-</form>
+<div class="d-flex">
+{{#if roleAdmin}}
+<button class="btn btn-default btn-danger marg-rigth" type="submit"><a class="buttondecnone" href="/library/{{libraryID}}/book/{{book._id}}/remove">Delete this book</a></button>
+{{/if}}
+<button class="btn btn-default btn-outline-primary" type="submit"><a class="buttondecnone" href="/library/{{libraryID}}">Back</a></button>
+</div>
 </div>
   </div>

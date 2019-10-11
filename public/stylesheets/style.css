@@ -15,7 +15,7 @@ a {
   margin: 10px 0px; }
 
 .corpo {
-  padding: 0px 30px; }
+  padding: 100px 5%; }
 
 .jumbotron {
   margin-top: 50px; }
@@ -44,7 +44,8 @@ a {
   width: 80px; }
 
 .addLivro {
-  text-decoration: none; }
+  text-decoration: none;
+  margin-right: 10px; }
 
 .img-thumbnail {
   border-radius: 50%;
@@ -56,9 +57,26 @@ a {
   height: 100px;
   margin: 20px auto; }
 
+.imageProfileLibrary {
+  width: 100px;
+  height: 100px; }
+
 footer {
   background-color: #f8f9fa;
   text-align: center;
-  margin-bottom: 0px; }
+  margin-bottom: 0px;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  padding: 5px; }
+
+.footer-text {
+  margin: 0; }
+
+.marg-rigth {
+  margin-right: 10px; }
+
+.buttondecnone {
+  text-decoration: none; }
 
 /*# sourceMappingURL=style.css.map */
