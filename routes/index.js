@@ -115,20 +115,25 @@ router.get('/library/:libraryID/delete-library', ensureAuthenticated, (req, res,
 // Update Library
 router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
-Library.findById(libraryID)
-  .then(library => {
-    if (library.admin.toString() === req.user._id.toString()) {
+  User.findById(req.user._id)
+    .then(user => {
       Library.findById(libraryID)
-        .populate('users')
-        .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
-        .then(library => {
-          const { user } = req;
-          res.render('edit-library', { library, user });
-        })
-        .catch(err => console.log(err))
-    } else { res.render('/library', {message: "Operation not allowed"}) }
-  })
-  .catch(err => console.log(err))
+      .then(library => {
+        if (library.admin.toString() === req.user._id.toString()) {
+          Library.findById(libraryID)
+            .populate('users')
+            .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
+            .then(library => {
+              console.log(user);
+              
+              res.render('edit-library', { library, user });
+            })
+            .catch(err => console.log(err))
+        } else { res.render('/library', {message: "Operation not allowed"}) }
+      })
+      .catch(err => console.log(err))
+    })
+    .catch(err => console.log(err))
 })
 
 router.post('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
@@ -266,7 +271,7 @@ router.get('/library/:libraryID/book-detail/:bookID', (req, res, next) => {
 // Adding Book to the Library from the list
 router.post('/library/:libraryID/add-book', (req, res, next) => {
   const { libraryID } = req.params
-  const { title, authors, description, image } = req.body;
+  const { title, authors, description, image, publisher, publishedDate, pageCount } = req.body;
 
   const newBook = new Book ({
     title,
@@ -274,8 +279,10 @@ router.post('/library/:libraryID/add-book', (req, res, next) => {
     description,
     image,
     libraryID,
+    publisher,
+    publishedDate,
+    pageCount,
     actualUserID: req.user._id,
-    usersLog: req.user._id,
   })
   
   newBook.save()
@@ -291,7 +298,7 @@ router.post('/library/:libraryID/add-book', (req, res, next) => {
 // Adding Book to the Library from the book details
 router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
   const { libraryID } = req.params
-  const { title, authors, description, image } = req.body;
+  const { title, authors, description, image, publisher, publishedDate, pageCount } = req.body;
 
   const newBook = new Book ({
     title,
@@ -299,6 +306,9 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
     description,
     image,
     libraryID,
+    publisher,
+    publishedDate,
+    pageCount,
     actualUserID: req.user._id,
   })
   

@@ -12,7 +12,10 @@ const bookSchema = new Schema({
   usersLog: [{type: Schema.Types.ObjectID, ref:`User`}],
   dateStart: {type: Date, default: Date.now},
   comments: Array,
-  actualUserBoolean: {type: Boolean, default: false}
+  actualUserBoolean: {type: Boolean, default: false},
+  publisher: String,
+  publishedDate: String,
+  pageCount: Number
 });
 
 const Book = mongoose.model("Book", bookSchema);

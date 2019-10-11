@@ -79,7 +79,11 @@ auth.get("/logout", (req, res) => {
 // Edit-profile
 auth.get("/edit-profile", (req, res, next) => {
   User.findById(req.user._id)
-  .then(user => res.render('edit-profile', {user}))
+
+  .then(user => {
+    console.log(user);
+    res.render('edit-profile', { user })
+  })
   .catch(err => console.log(err))
 })
 

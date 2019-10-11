@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css?family=Be+Vietnam&display=swap" rel="stylesheet">
 
 </head>
+<body>
 {{#if user}}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <img class="img-fluid" src="/images/sharedlibrary_logosign.png" alt="logo">
@@ -20,36 +21,31 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/libraries">Home <span class="sr-only">(current)</span></a>
-      </li>
-      {{!-- <li class="nav-item">
-          <a class="nav-link" href="/libraries">My Profile</a>
-        </li> --}}
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          My Libraries
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          {{#each user.library}}
-          <a class="dropdown-item" href="/library/{{this._id}}">{{this.title}}</a>
-          <div class="dropdown-divider"></div>
-          {{/each}}
-          <a class="dropdown-item" href="/libraries">View all</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Sign Out</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-{{/if}}
-
-<body>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/libraries">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            My Libraries
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {{#each user.library}}
+            <a class="dropdown-item" href="/library/{{this._id}}">{{this.title}}</a>
+            <div class="dropdown-divider"></div>
+             {{/each}}
+            <a class="dropdown-item" href="/libraries">View all</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Sign Out</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  {{/if}}
   <div class="corpo">
 
     {{{body}}}
