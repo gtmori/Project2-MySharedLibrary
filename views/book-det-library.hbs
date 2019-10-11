@@ -1,20 +1,20 @@
 <div class="jumbotron">
-<div class="text-center mb-4">
-<img src="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}" alt="Book Cover" >
-</div>
-<h3>{{bookDetails.data.volumeInfo.title}}</h3>
-<h5><b>Author:</b> {{bookDetails.data.volumeInfo.authors}}</h5>
-<h5><b>Published by:</b> {{bookDetails.data.volumeInfo.publisher}}</h5>
-<h5><b>Published in:</b> {{bookDetails.data.volumeInfo.publishedDate}}</h5>
-<h5><b>Number of pages:</b> {{bookDetails.data.volumeInfo.pageCount}}</h5>
-<h5><b>Description:</b> {{bookDetails.data.volumeInfo.description}}</h5>
 
-<form action="add-book" method="post">
-  <input type="hidden" name="title" id="" value="{{bookDetails.data.volumeInfo.title}}">
-  <input type="hidden" name="description" id="" value="{{bookDetails.data.volumeInfo.description}}">
-  <input type="hidden" name="authors" id="" value="{{bookDetails.data.volumeInfo.authors}}">
-  <input type="hidden" name="image" id="" value="{{bookDetails.data.volumeInfo.imageLinks.thumbnail}}">
-  <button class="btn btn-default btn-danger" type="submit">Delete this book</button>
-  <button class="btn btn-default btn-outline-primary" type="submit">Back</button>
-</form>
+<div class="text-center mb-4">
+<img src="{{book.image}}" alt="Book Cover" >
 </div>
+  <div class="card">
+<h3 class="card-header">{{book.title}}</h3>
+<h5 class="card-body"><b>Author:</b> {{book.author}}</h5>
+<h5 class="card-body"><b>Published by:</b> {{book.publisher}}</h5>
+<h5 class="card-body"><b>Published in:</b> {{book.publishedDate}}</h5>
+<h5 class="card-body"><b>Number of pages:</b> {{book.pageCount}}</h5>
+<h5 class="card-body"><b>Description:</b> {{book.description}}</h5>
+<div class="d-flex">
+{{#if roleAdmin}}
+<button class="btn btn-default btn-danger marg-rigth" type="submit"><a class="buttondecnone" href="/library/{{libraryID}}/book/{{book._id}}/remove">Delete this book</a></button>
+{{/if}}
+<button class="btn btn-default btn-outline-primary" type="submit"><a class="buttondecnone" href="/library/{{libraryID}}">Back</a></button>
+</div>
+</div>
+  </div>

@@ -78,8 +78,10 @@ auth.get("/logout", (req, res) => {
 // =====================================================================================================================================
 // Edit-profile
 auth.get("/edit-profile", (req, res, next) => {
-  User.findById(req.user._id)
-  .then(user => res.render('edit-profile', {user}))
+  User.findById(req.user._id).populate('library')
+  .then(user => {
+    res.render('edit-profile', { user })
+  })
   .catch(err => console.log(err))
 })
 
@@ -87,13 +89,9 @@ auth.post("/edit-profile", uploadCloud.single('picture'), (req, res, next) => {
   const { name, username, adress } = req.body
   const imgPath = req.file.url;
   const imgName = req.file.originalname;
-  User.findById(req.user._id)
-    .then(user => {
-      User.findByIdAndUpdate(req.user._id,{name, username, adress, imgPath, imgName})
-      .then(res.redirect('/libraries', { user }))
+  User.findByIdAndUpdate(req.user._id,{ name, username, adress, imgPath, imgName })
+      .then(res.redirect('/libraries'))
       .catch(err => console.log(err))
-    })
-    .catch(err => console.log(err))
-})
+  })
 
 module.exports = auth;
