@@ -1,20 +1,52 @@
 <div>
+<h1>Library: {{library.title}}</h1>
+</div>
+
+<div class="row">
+  <div class="d-flex justify-content-lg-start justify-content-center col-12 col-md-6">
+    <button class="btn btn-default btn-primary addLivro" type="submit" ><a href="/library/{{library._id}}/search" >Add a book</a></button>
+    {{#if roleAdmin}}
+    <button class="btn btn-default btn-outline-primary addLivro" type="submit" ><a href="/library/{{library._id}}/edit-library" >Edit Library</a></button>
+    {{/if}}
+  </div>
+  <div class="d-flex justify-content-lg-end justify-content-center col-12 col-md-6">
+    <button class="btn btn-default btn-primary addLivro" type="submit" data-toggle="modal" data-target="#addUserModal">Add a user</button>
+  </div>
+</div>
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>To invite a friend to this library, send this link to a already logged user:</p>
+        <br>
+        <p>https://shared-library.herokuapp.com/library/{{libraryID}}/adduser</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
 <h2>Books available:</h2>
 </div>
 
-<button class="btn btn-deafault btn-primary addLivro" type="submit" ><a href="/library/{{library._id}}/search" >Add a book</a></button>
-{{#if roleAdmin}}
-<button class="btn btn-deafault btn-outline-primary addLivro" type="submit" ><a href="/library/{{library._id}}/edit-library" >Edit Library</a></button>
-{{/if}}
 {{!-- To use --}}
-<div class="row">
+<div class="row justify-content-around">
   {{#each library.books}}
-<div class="card col-md-3 col-sx-12 col-sm-6" style="width: 18rem;">
+<div class="card col-12 col-md-6 col-lg-4">
   <img src="{{this.image}}" alt="Book Cover" class="card-img-top">
   <div class="card-body">
     <h5 class="card-title">{{this.title}}</h5>
     <h6>Current holder: {{this.actualUserID.name}}</h6>
-    <p class="card-text">Book details.</p>
+    <p class="card-text">Next on line: {{this.waitList.0.name}}</p>
     <a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitingList" class="btn btn-outline-primary">Add me to the Waiting List</a>
     <a href="/library/{{libraryID}}/book/{{this._id}}/book-detail" class="btn btn-primary">Book details</a>
     {{#if roleAdmin}}    

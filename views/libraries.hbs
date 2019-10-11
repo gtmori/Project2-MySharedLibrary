@@ -1,6 +1,11 @@
-<div>
-  <h4 class="my-4">Hello, {{user.name}}!</h4>
-    <button type="submit" class="btn btn-default btn-outline-primary addLivro"><a href="/edit-profile">Edit Profile</a></button>
+<div class="d-flex align-items-center row">
+  <div class="d-flex justify-content-start align-items-center col-12 col-md-10">
+    <img src="{{user.imgPath}}" alt="{{user.imgName}}" class="img-thumbnail imageProfileLibrary marg-rigth">
+    <h4 class="my-4">Hello, {{user.name}}!</h4>
+  </div>
+  <div class="d-flex justify-content-center col-12 col-md-2">
+  <button type="submit" class="btn btn-default btn-outline-primary addLivro"><a href="/edit-profile">Edit Profile</a></button>
+  </div>
 </div>
  <hr class="my-2">
 <div>
@@ -10,7 +15,8 @@
       {{!-- <img src="..." class="card-img-top" alt="..."> --}}
       <div class="card-body">
         <h5 class="card-title">{{this.title}}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Number of members</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{this.subtitle}}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Number of members: {{this.countUsers}}</h6>
         <p class="card-text">{{this.description}}</p>
         <a href="/library/{{this._id}}" class="btn btn-primary">See library</a>
       </div>

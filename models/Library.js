@@ -9,6 +9,7 @@ const librarySchema = new Schema({
   users: [{type: Schema.Types.ObjectID, ref:`User`}],
   books: [{type: Schema.Types.ObjectID, ref:`Book`}],
   comments: Array,
+  countUsers: {type: Number, default: 0}
 });
 
 const Library = mongoose.model("Library", librarySchema);

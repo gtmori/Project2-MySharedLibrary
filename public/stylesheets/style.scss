@@ -19,7 +19,7 @@ color:inherit;
 }
 
 .corpo {
-  padding: 0px 30px;
+  padding: 100px 5%;
 }
 
 .jumbotron {
@@ -56,6 +56,7 @@ color:inherit;
 
 .addLivro {
   text-decoration: none;
+  margin-right: 10px;
 }
 
 .img-thumbnail {
@@ -70,8 +71,29 @@ color:inherit;
   margin: 20px auto;
 }
 
+.imageProfileLibrary {
+  width: 100px;
+  height: 100px;
+}
+
 footer {
   background-color: #f8f9fa;
   text-align: center;;
   margin-bottom: 0px;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  padding: 5px;
+}
+
+.footer-text {
+  margin: 0;
+}
+
+.marg-rigth {
+  margin-right: 10px;
+}
+
+.buttondecnone {
+  text-decoration: none;
 }

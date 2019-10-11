@@ -19,7 +19,8 @@ function ensureAuthenticated(req, res, next) {
 // Login Page - All libraries
 router.get('/libraries', ensureAuthenticated, (req, res, next) => {
   User.findById(req.user._id).populate('library')
-    .then(user => {res.render(`libraries`,{user})})
+    .then(user => {
+      res.render(`libraries`,{user})})
     .catch(err => console.log(err))})
 
 // =====================================================================================================================================
@@ -31,12 +32,17 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
     .then(user => {
       Library.findById(libraryID)
           .populate('users')
-          .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
+          .populate({path: 'books', populate : ({path: `waitList`})})
+          .populate({path: 'books', populate : ({path: `actualUserID`})})
         .then(library => {
           library.books.forEach(book => {
             if(book.actualUserID._id.toString() === req.user._id.toString()) {
               book.actualUserBoolean = true;}
-          })   
+          })
+          console.log(library);
+          console.log(library.books);
+          
+          
           let roleAdmin = (library.admin.toString() === req.user._id.toString())
           res.render('library', { user, libraryID, library, roleAdmin });
         })
@@ -65,7 +71,8 @@ router.post('/new-library', ensureAuthenticated, (req, res, next) => {
     subtitle,
     description,
     admin: req.user._id,
-    users: req.user._id
+    users: req.user._id,
+    countUsers: 1,
   })
 
   newLibrary.save()
@@ -115,7 +122,7 @@ router.get('/library/:libraryID/delete-library', ensureAuthenticated, (req, res,
 // Update Library
 router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
-  User.findById(req.user._id)
+  User.findById(req.user._id).populate('library')
     .then(user => {
       Library.findById(libraryID)
       .then(library => {
@@ -123,9 +130,7 @@ router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, n
           Library.findById(libraryID)
             .populate('users')
             .populate({path: 'books', populate : ({path: `waitList`}, {path: `actualUserID`})})
-            .then(library => {
-              console.log(user);
-              
+            .then(library => {              
               res.render('edit-library', { library, user });
             })
             .catch(err => console.log(err))
@@ -139,25 +144,39 @@ router.get('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, n
 router.post('/library/:libraryID/edit-library', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
   const { title, subtitle, description } = req.body
-
-  if (library.admin.toString() === req.user._id.toString()) {
-    Library.findByIdAndUpdate( libraryID, { title, subtitle, description } )
-      .then(res.redirect(`/library/${libraryID}`))
-      .catch(err => console.log(err))
-  } else { res.render('/library', {message: "Operation not allowed"}) }
+  Library.findById(libraryID)
+    .then(library => {
+      if (library.admin.toString() === req.user._id.toString()) {
+        Library.findByIdAndUpdate( libraryID, { title, subtitle, description } )
+          .then(res.redirect(`/library/${libraryID}`))
+          .catch(err => console.log(err))
+      } else { res.render('/library', {message: "Operation not allowed"}) }
+    })
+    .catch(err => console.log(err))
 })
 // =====================================================================================================================================
 // Adding user to a library
 router.get('/library/:libraryID/adduser', ensureAuthenticated, (req, res, next) => {
   const { libraryID } = req.params;
   
-  Promise.all([
-    Library.findByIdAndUpdate(libraryID,{$push: {users: req.user}}), 
-    User.findByIdAndUpdate(req.user._id, {$push: {library: libraryID}})
-  ])
-    .then(res.redirect(`/library/${libraryID}`))
-    .catch(err => console.log(err))
-  })
+  
+  Library.findById(libraryID)
+    .then(library => {        
+      library.countUsers += 1;                
+      library.users.push(req.user)
+      console.log(library.users);
+      
+      const { users, countUsers } = library
+      Library.findByIdAndUpdate(libraryID,{ users, countUsers })
+        .then(() =>{
+          User.findByIdAndUpdate(req.user._id, {$push: {library: libraryID}})
+            .then(res.redirect(`/library/${libraryID}`))
+            .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
+})
 // =====================================================================================================================================
 // Search Book from Google API - List
 router.get('/library/:libraryID/search', (req, res, next) => {
@@ -327,8 +346,14 @@ router.get('/library/:libraryID/book/:bookID/book-detail', (req, res, next) => {
   User.findById(req.user._id)
     .then(user => {
       Book.findById(bookID)
-        .then(book => res.render('book-det-library', {user, book}))
-        .catch(err=>console.log(err))
+      .then(book => {
+        Library.findById(libraryID)
+          .then(library => {
+            let roleAdmin = (library.admin.toString() === req.user._id.toString())
+            res.render('book-det-library', {libraryID, user, book, roleAdmin})})
+          .catch(err=>console.log(err))
+      })
+      .catch(err=>console.log(err))
     })
     .catch(err => console.log(err))
 })
@@ -345,7 +370,7 @@ router.get('/library/:libraryID/book/:bookID/add-user-waitinglist', (req, res, n
 // Remove book from a library
 router.get(`/library/:libraryID/book/:bookID/remove`, (req,res,next) => {
   const { libraryID, bookID } = req.params;
-  Library.findById(req.user._id)
+  Library.findById(libraryID)
     .then(library => {
       if (library.admin.toString() === req.user._id.toString()) {
         for (let i = 0; i < library.books.length; i += 1) {
