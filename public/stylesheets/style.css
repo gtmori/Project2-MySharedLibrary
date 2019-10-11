@@ -3,6 +3,7 @@
   padding: 0; }
 
 body {
+  padding: 0px 30px;
   font-family: 'Be Vietnam', sans-serif;
   font-size: 14px; }
 
@@ -54,5 +55,10 @@ a {
   width: 100px;
   height: 100px;
   margin: 20px auto; }
+
+footer {
+  background-color: #f8f9fa;
+  text-align: center;
+  margin-bottom: 0px; }
 
 /*# sourceMappingURL=style.css.map */

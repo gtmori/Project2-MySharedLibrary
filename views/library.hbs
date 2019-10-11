@@ -1,5 +1,5 @@
 <div>
-<h2>Books in the Library</h2>
+<h2>Books available:</h2>
 </div>
 
 <button class="btn btn-deafault btn-primary addLivro" type="submit" ><a href="/library/{{library._id}}/search" >Add a book</a></button>
@@ -15,7 +15,7 @@
     <h5 class="card-title">{{this.title}}</h5>
     <h6>Current holder: {{this.actualUserID.name}}</h6>
     <p class="card-text">Book details.</p>
-    <a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitingList" class="btn btn-primary">Add me to the Waiting List</a>
+    <a href="/library/{{libraryID}}/book/{{this._id}}/add-user-waitingList" class="btn btn-outline-primary">Add me to the Waiting List</a>
     <a href="/library/{{libraryID}}/book/{{this._id}}/book-detail" class="btn btn-primary">Book details</a>
     {{#if roleAdmin}}    
     <a href="/library/{{libraryID}}/book/{{this._id}}/remove" class="btn btn-primary">Remove Book</a>
