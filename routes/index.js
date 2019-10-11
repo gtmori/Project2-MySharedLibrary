@@ -39,10 +39,6 @@ router.get('/library/:libraryID', ensureAuthenticated, (req, res, next) => {
             if(book.actualUserID._id.toString() === req.user._id.toString()) {
               book.actualUserBoolean = true;}
           })
-          console.log(library);
-          console.log(library.books);
-          
-          
           let roleAdmin = (library.admin.toString() === req.user._id.toString())
           res.render('library', { user, libraryID, library, roleAdmin });
         })
@@ -164,8 +160,6 @@ router.get('/library/:libraryID/adduser', ensureAuthenticated, (req, res, next) 
     .then(library => {        
       library.countUsers += 1;                
       library.users.push(req.user)
-      console.log(library.users);
-      
       const { users, countUsers } = library
       Library.findByIdAndUpdate(libraryID,{ users, countUsers })
         .then(() =>{
@@ -190,8 +184,6 @@ router.get('/library/:libraryID/search', (req, res, next) => {
 
 router.get('/library/:libraryID/search-book', (req, res, next) => {
   const { libraryID } = req.params;
-  console.log(libraryID);
-  
   const { title, author } = req.query  
   const bookTitleValue = title.trim().replace(' ', '+');
   const bookAuthorValue = author.trim().replace(' ', '+');
@@ -329,10 +321,11 @@ router.post('/library/:libraryID/book-detail/add-book', (req, res, next) => {
     publishedDate,
     pageCount,
     actualUserID: req.user._id,
-  })
-  
+  })  
   newBook.save()
     .then(book => {
+      console.log(book);
+      
       Library.findByIdAndUpdate(libraryID, {$push: {books: book}})
         .then(res.redirect(`/library/${libraryID}`))
         .catch(err=>console.log(err))    
