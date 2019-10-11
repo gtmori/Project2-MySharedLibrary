@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css?family=Be+Vietnam&display=swap" rel="stylesheet">
 
 </head>
+<body>
 {{#if user}}
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <img class="img-fluid" src="/images/sharedlibrary_logosign.png" alt="logo">
@@ -25,9 +26,6 @@
         <li class="nav-item active">
           <a class="nav-link" href="/libraries">Home <span class="sr-only">(current)</span></a>
         </li>
-        {{!-- <li class="nav-item">
-          <a class="nav-link" href="/libraries">My Profile</a>
-        </li> --}}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
@@ -48,7 +46,6 @@
     </div>
   </nav>
   {{/if}}
-<body>
   <div class="corpo">
 
   {{{body}}}
